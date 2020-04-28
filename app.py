@@ -9,8 +9,6 @@ import re
 
 df = pd.read_csv('/home/jack/Desktop/song_data.csv')
 
-df['songs'] = df['song_name'].map(lambda x: re.sub(r'\W+', '', x))
-
 ########### Initiate the app
 app = dash.Dash(__name__, external_stylesheets=['https://codepen.io/chriddyp/pen/bWLwgP.css'])
 server = app.server
@@ -27,7 +25,7 @@ app.layout = html.Div(children=[
             max=1,
             step=0.1,
             marks={i:str(i) for i in [0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1]},
-            value=0.5,
+            value=0,
         ),
         html.Br(),
         html.H6('Energy'),
@@ -37,7 +35,7 @@ app.layout = html.Div(children=[
             max=1,
             step=0.1,
             marks={i:str(i) for i in [0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1]},
-            value=0.5,
+            value=0,
         ),
         html.H6('Key'),
         dcc.Slider(
@@ -46,7 +44,7 @@ app.layout = html.Div(children=[
             max=11,
             step=1,
             marks={i:str(i) for i in range(0,12)},
-            value=5,
+            value=0,
         ),
         html.Br(),
         html.H6('Loudness'),
@@ -56,7 +54,7 @@ app.layout = html.Div(children=[
             max=1,
             step=.1,
             marks={i:str(i) for i in [0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1]},
-            value=0.5,
+            value=0,
         ),
         html.H6('Mode'),
         dcc.Slider(
@@ -75,7 +73,7 @@ app.layout = html.Div(children=[
             max=1,
             step=.1,
             marks={i:str(i) for i in [0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1]},
-            value=0.5,
+            value=0,
         ),
         html.H6('Acousticness'),
         dcc.Slider(
@@ -84,7 +82,7 @@ app.layout = html.Div(children=[
             max=1,
             step=.1,
             marks={i:str(i) for i in [0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1]},
-            value=0.5,
+            value=0,
         ),
         html.Br(),
         html.H6('Instrumentalness'),
@@ -94,16 +92,16 @@ app.layout = html.Div(children=[
             max=1,
             step=.1,
             marks={i:str(i) for i in [0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1]},
-            value=0.5,
+            value=0,
         ),
-                html.H6('Liveness'),
+        html.H6('Liveness'),
         dcc.Slider(
             id='slider-9',
             min=0,
             max=1,
             step=.1,
             marks={i:str(i) for i in [0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1]},
-            value=0.5,
+            value=0,
         ),
         html.Br(),
         html.H6('Valence'),
@@ -113,7 +111,7 @@ app.layout = html.Div(children=[
             max=1,
             step=.1,
             marks={i:str(i) for i in [0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1]},
-            value=0.5,
+            value=0,
         ),
         html.H6('Tempo'),
         dcc.Slider(
@@ -122,17 +120,17 @@ app.layout = html.Div(children=[
             max=200,
             step=25,
             marks={i:str(i) for i in [0,25,50,75,100,125,150,175,200]},
-            value=100,
+            value=0,
         ),
         html.Br(),
-        html.H6('Duration (milliseconds)'),
+        html.H6('Duration (mins)'),
         dcc.Slider(
             id='slider-12',
             min=0,
-            max=600000,
-            step=100000,
-            marks={i:str(i) for i in [0,100000,200000,300000,400000,500000,600000]},
-            value=300000,
+            max=300000,
+            step=60000,
+            marks={i:str(i) for i in [1,2,3,4,5]},
+            value=0,
         ),
         html.H6('Time Signature'),
         dcc.Slider(
@@ -141,7 +139,7 @@ app.layout = html.Div(children=[
             max=2,
             step=1,
             marks={i:str(i) for i in [0,1,2]},
-            value=1,
+            value=0,
         ),
         html.Br(),
         html.H6('Popularity'),
@@ -151,7 +149,7 @@ app.layout = html.Div(children=[
             max=100,
             step=10,
             marks={i:str(i) for i in [0,10,20,30,40,50,60,70,80,90,100]},
-            value=50,
+            value=0,
         ),
 
         html.H6(id='output-message', children='output will go here'),
@@ -190,10 +188,8 @@ def display_results(value0, value1, value2, value3, value4, value5, value6, valu
     file.close()
     new_obs=[[value0, value1, value2, value3, value4, value5, value6, value7,
             value8, value9, value10, value11, value12, value13]]
-    pred = model.predict(new_obs)
-    songlist = df['songs']
-    final_pred = songlist[pred[0]]
-    print(f'You should listen to: {final_pred}!')
+    pred = model.predict(new_obs)[0]
+    return 'You might like the song "' + f'{pred}' + '" !'
 
 
 ############ Execute the app
