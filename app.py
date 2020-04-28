@@ -154,7 +154,7 @@ app.layout = html.Div(children=[
             value=50,
         ),
 
-        html.H6(id='output-message'),
+        html.H6(id='output-message', children='output will go here'),
     
     
     
