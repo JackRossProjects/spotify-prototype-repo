@@ -7,7 +7,7 @@ import pandas as pd
 import pickle
 import re
 
-df = pd.read_csv('/home/jack/Desktop/song_data.csv')
+df = pd.read_csv('song_data.csv')
 
 ########### Initiate the app
 app = dash.Dash(__name__, external_stylesheets=['https://codepen.io/chriddyp/pen/bWLwgP.css'])
@@ -183,7 +183,7 @@ app.layout = html.Div(children=[
 
 def display_results(value0, value1, value2, value3, value4, value5, value6, value7,
             value8, value9, value10, value11, value12, value13):
-    file = open('/home/jack/Desktop/spotify_models/spotify_model_k5.pkl', 'rb')
+    file = open('spotify_model_k5.pkl', 'rb')
     model = pickle.load(file)
     file.close()
     new_obs=[[value0, value1, value2, value3, value4, value5, value6, value7,
