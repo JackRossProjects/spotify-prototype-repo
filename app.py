@@ -5,6 +5,11 @@ import plotly.graph_objs as go
 from dash.dependencies import Input, Output, State
 import pandas as pd
 import pickle
+import re
+
+df = pd.read_csv('/home/jack/Desktop/song_data.csv')
+
+df['songs'] = df['song_name'].map(lambda x: re.sub(r'\W+', '', x))
 
 ########### Initiate the app
 app = dash.Dash(__name__, external_stylesheets=['https://codepen.io/chriddyp/pen/bWLwgP.css'])
@@ -149,7 +154,7 @@ app.layout = html.Div(children=[
             value=50,
         ),
 
-        html.H6(id='output-message', children='output will go here'),
+        html.H6(id='output-message'),
     
     
     
@@ -161,7 +166,7 @@ app.layout = html.Div(children=[
 
 ################ Interactive callbacks
 @app.callback(Output('output-message', 'children'),
-            [Input('k-drop', 'value'),
+            [
             Input('slider-1', 'value'),
             Input('slider-2', 'value'),
             Input('slider-3', 'value'),
@@ -175,18 +180,21 @@ app.layout = html.Div(children=[
             Input('slider-11', 'value'),
             Input('slider-12', 'value'),
             Input('slider-13', 'value'),
-            Input('slider-14', 'value'),
+            Input('slider-14', 'value')
             ])
 
-def display_results(k, value0, value1):
-    file = open(f'/home/jack/Desktop/irismodels/model_k{k}.pkl', 'rb')
+def display_results(value0, value1, value2, value3, value4, value5, value6, value7,
+            value8, value9, value10, value11, value12, value13):
+    file = open('/home/jack/Desktop/spotify_models/spotify_model_k5.pkl', 'rb')
     model = pickle.load(file)
     file.close()
-    new_obs=[[value0, value1]]
+    new_obs=[[value0, value1, value2, value3, value4, value5, value6, value7,
+            value8, value9, value10, value11, value12, value13]]
     pred = model.predict(new_obs)
-    specieslist=['s','ve', 'vi']
-    final_pred = specieslist[pred[0]]
-    return f'For a flower with sepal length {value0} and petal length {value1}, the predicted species is {final_pred}'
+    songlist = df['songs']
+    final_pred = songlist[pred[0]]
+    print(f'You should listen to: {final_pred}!')
+
 
 ############ Execute the app
 if __name__ == '__main__':
